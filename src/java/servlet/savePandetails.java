@@ -56,6 +56,7 @@ public class savePandetails extends HttpServlet {
             System.err.println("jsResponse: "+jsonArray);
             // You can now send the JSONArray in the response as JSON data
             resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(jsonArray.toString());
 
             return;

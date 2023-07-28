@@ -14,85 +14,75 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.sql.*;
 
 /**
  *
  * @author Tuhin
  */
-@WebServlet(name = "ACC_Opening_verifyOTP", urlPatterns = {"/acc_opening_verifyOTP"})
-public class ACC_Opening_verifyOTP extends HttpServlet {
-
+@WebServlet(name = "savePersonalDetails", urlPatterns = {"/savePersonalDetails"})
+public class savePersonalDetails extends HttpServlet {
     CallableStatement cs = null;
     ResultSet rs = null;
     Connection conn = null;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         JSONObject jsonBody = ReqBody.getBody(req);
 
-        String mobile = jsonBody.getString("mobile");
-        String emailId = jsonBody.getString("emailId");
-        String otp = jsonBody.getString("otp");
-
+        String panno = jsonBody.getString("panno");
+        String cname = jsonBody.getString("cname");
+        String fhname = jsonBody.getString("fhname");
+        String mname = jsonBody.getString("mname");
+        String gender = jsonBody.getString("gender");
+        String maristate = jsonBody.getString("maristate");
+        String address = jsonBody.getString("address");
+        String pincode = jsonBody.getString("pincode");
+        String kraedit = jsonBody.getString("kraedit");
+        
+        System.err.println(panno);
+        System.err.println(cname);
+        System.err.println(fhname);
+        System.err.println(mname);
+        System.err.println(gender);
+        System.err.println(maristate);
+        System.err.println(address);
+        System.err.println(pincode);
+        System.err.println(kraedit);
 
         try {
             conn = DBUtil.getConnection();
 
-            cs = conn.prepareCall(DBConstraints.EKYC_VERIFY_OTP);
+            cs = conn.prepareCall(DBConstraints.EKYC_SAVE_PERSONAL_DETAILS);
 
-            cs.setString(1, mobile);
-            cs.setString(2, otp);
+            cs.setString(1, panno);
+            cs.setString(2, cname);
+            cs.setString(3, fhname);
+            cs.setString(4, mname);
+            cs.setString(5, gender);
+            cs.setString(6, maristate);
+            cs.setString(7, address);
+            cs.setString(8, pincode);
+            cs.setString(9, kraedit);
+
 
             // Execute the stored procedure
             rs = cs.executeQuery();
 
             JSONArray jsonArray = DBUtil.resultSetToJsonArray(rs);
-            
-            if(jsonArray.getJSONObject(0).getString("Msg").equals("Authentication Successfull")){
-                jsonArray = saveAccInfo(mobile,emailId,"");
-            }
             
             resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(jsonArray.toString());
-            
-            return;
 
         } catch (Exception e) {
             System.out.println("Server error: " + e);
+            e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("An internal server error occurred.");
-            return;
         }
     }
-
-    public JSONArray saveAccInfo(String mobile, String emailId, String UserRights) {
-        try {
-            conn = DBUtil.getConnection();
-
-            cs = conn.prepareCall(DBConstraints.EKYC_SAVE_ACC_INFO);
-
-            cs.setString(1, mobile);
-            cs.setString(2, emailId);
-            cs.setString(3, UserRights);
-
-
-            // Execute the stored procedure
-            rs = cs.executeQuery();
-
-            JSONArray jsonArray = DBUtil.resultSetToJsonArray(rs);
-
-            return jsonArray;
-
-        } catch (Exception e) {
-            System.out.println("Server error: " + e);
-            return new JSONArray();
-        }
-    }
+   
 }

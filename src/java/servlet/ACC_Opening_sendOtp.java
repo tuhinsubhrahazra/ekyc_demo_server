@@ -46,6 +46,38 @@ public class ACC_Opening_sendOtp extends HttpServlet {
 
         try {
             conn = DBUtil.getConnection();
+            
+            cs = conn.prepareCall(DBConstraints.EKYC_IS_ALREADY_ACC);
+
+            cs.setString(1, mobileNo);
+            cs.setString(2, emailId);
+
+            // Execute the stored procedure
+            rs = cs.executeQuery();
+
+            JSONArray jsonArray = DBUtil.resultSetToJsonArray(rs);
+            
+            if(jsonArray.getJSONObject(0).getInt("Status")==0){
+                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                resp.getWriter().write(jsonArray.getJSONObject(0).getString("Msg"));
+                return;
+            }else if(jsonArray.getJSONObject(0).getInt("Status")==2){
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getWriter().write(jsonArray.getJSONObject(0).getString("Msg"));
+            }
+            
+        } catch (Exception e) {
+            System.out.println("Server error: " + e);
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("An internal server error occurred.");
+        }
+        
+        
+        
+        
+        try {
+            conn = DBUtil.getConnection();
 
             cs = conn.prepareCall(DBConstraints.EKYC_SEND_OTP);
 
@@ -73,6 +105,7 @@ public class ACC_Opening_sendOtp extends HttpServlet {
 
         } catch (Exception e) {
             System.out.println("Server error: " + e);
+            e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("An internal server error occurred.");
             return;

@@ -14,85 +14,64 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.sql.*;
 
 /**
  *
  * @author Tuhin
  */
-@WebServlet(name = "ACC_Opening_verifyOTP", urlPatterns = {"/acc_opening_verifyOTP"})
-public class ACC_Opening_verifyOTP extends HttpServlet {
-
+@WebServlet(name = "saveSegment", urlPatterns = {"/saveSegment"})
+public class saveSegment extends HttpServlet {
     CallableStatement cs = null;
     ResultSet rs = null;
     Connection conn = null;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         JSONObject jsonBody = ReqBody.getBody(req);
 
-        String mobile = jsonBody.getString("mobile");
-        String emailId = jsonBody.getString("emailId");
-        String otp = jsonBody.getString("otp");
-
+        String panNo = jsonBody.getString("panNo");
+        String equity = jsonBody.getString("equity");
+        String fno = jsonBody.getString("fno");
+        String curr = jsonBody.getString("curr");
+        String commo = jsonBody.getString("commo");
+        String dp = jsonBody.getString("dp");
+        String mf = jsonBody.getString("mf");
 
         try {
             conn = DBUtil.getConnection();
 
-            cs = conn.prepareCall(DBConstraints.EKYC_VERIFY_OTP);
+            cs = conn.prepareCall(DBConstraints.EKYC_SAVE_SEGMENT);
 
-            cs.setString(1, mobile);
-            cs.setString(2, otp);
+            cs.setString(1, panNo);
+            cs.setString(2, equity);
+            cs.setString(3, fno);
+            cs.setString(4, curr);
+            cs.setString(5, commo);
+            cs.setString(6, dp);
+            cs.setString(7, mf);
 
             // Execute the stored procedure
             rs = cs.executeQuery();
 
             JSONArray jsonArray = DBUtil.resultSetToJsonArray(rs);
-            
-            if(jsonArray.getJSONObject(0).getString("Msg").equals("Authentication Successfull")){
-                jsonArray = saveAccInfo(mobile,emailId,"");
-            }
-            
+
+            // You can now send the JSONArray in the response as JSON data
             resp.setContentType("application/json");
-            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setStatus(HttpServletResponse.SC_OK);  
             resp.getWriter().write(jsonArray.toString());
             
             return;
-
+            
         } catch (Exception e) {
             System.out.println("Server error: " + e);
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("An internal server error occurred.");
             return;
         }
+
     }
-
-    public JSONArray saveAccInfo(String mobile, String emailId, String UserRights) {
-        try {
-            conn = DBUtil.getConnection();
-
-            cs = conn.prepareCall(DBConstraints.EKYC_SAVE_ACC_INFO);
-
-            cs.setString(1, mobile);
-            cs.setString(2, emailId);
-            cs.setString(3, UserRights);
-
-
-            // Execute the stored procedure
-            rs = cs.executeQuery();
-
-            JSONArray jsonArray = DBUtil.resultSetToJsonArray(rs);
-
-            return jsonArray;
-
-        } catch (Exception e) {
-            System.out.println("Server error: " + e);
-            return new JSONArray();
-        }
-    }
+   
 }

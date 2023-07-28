@@ -11,10 +11,14 @@ package connection;
 public class DBConstraints {
 
     public static String EKYC_LOGIN_SP = "{call Proc_Login(?,?,?,?,?)}";
-    public static String EKYC_IS_ALREADY_ACC = "{call Proc_isAlreadyAcc(?,?,?,?,?)}";
+    public static String EKYC_IS_ALREADY_ACC = "{call Proc_isAlreadyAcc(?,?)}";
     public static String EKYC_SEND_OTP = "{call Proc_GetSMSCredential(?,?,?)}";
     public static String EKYC_VERIFY_OTP = "{call Proc_verifyOTP(?,?)}";
     public static String EKYC_SAVE_ACC_INFO = "{call proc_saveAccInfo(?,?,?)}";
     public static String EKYC_SAVE_PAN_INFO = "{call Proc_savePanDetails(?,?,?,?)}";
+    public static String EKYC_SAVE_PERSONAL_DETAILS = "{call proc_savepersonaldetails(?,?,?,?,?,?,?,?,?)}";
+    public static String EKYC_SAVE_SEGMENT = "{call proc_savesegment(?,?,?,?,?,?,?)}";
+    
+            
 
 }
