@@ -18,6 +18,8 @@ public class DBConstraints {
     public static String EKYC_SAVE_PAN_INFO = "{call Proc_savePanDetails(?,?,?,?)}";
     public static String EKYC_SAVE_PERSONAL_DETAILS = "{call proc_savepersonaldetails(?,?,?,?,?,?,?,?,?)}";
     public static String EKYC_SAVE_SEGMENT = "{call proc_savesegment(?,?,?,?,?,?,?)}";
+    public static String EKYC_SAVE_DP = "{call proc_savedpdata(?,?,?,?,?,?)}";
+
     
             
 
