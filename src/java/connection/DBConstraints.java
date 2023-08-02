@@ -22,6 +22,7 @@ public class DBConstraints {
     public static String EKYC_SAVE_BANK_DETAILS = "{call proc_savebankdetails(?,?,?,?,?)}";
     public static String EKYC_SAVE_REGULATORY_DETAILS = "{call proc_regulatoryques(?,?,?,?,?,?,?,?,?,?,?)}";
     public static String EKYC_SAVE_LIVE_IMAGE = "{call Proc_saveImg(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+    public static String EKYC_SAVE_LIVE_IPVLOG = "{call Proc_Ipvlog(?,?,?,?,?,?)}";
 
 
     

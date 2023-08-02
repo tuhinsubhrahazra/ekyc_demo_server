@@ -58,7 +58,11 @@ public class saveLiveImage extends HttpServlet {
             String RegNo = jsonBody.getString("RegNo");
             String RegExpDate = jsonBody.getString("RegExpDate");
             int filesize = jsonBody.getInt("filesize");
-            
+            String ipadd = jsonBody.getString("ipadd");
+            String location = jsonBody.getString("location");
+            String state = jsonBody.getString("state");
+            double latitude = jsonBody.getDouble("latitude");
+            double longitude = jsonBody.getDouble("longitude");
             
             // convert base64 data to byte array
             byte []imgArray = base64StringToByteArray(image);
@@ -86,6 +90,16 @@ public class saveLiveImage extends HttpServlet {
 
 
                 // Execute the stored procedure
+                cs.execute();
+                
+                cs = conn.prepareCall(DBConstraints.EKYC_SAVE_LIVE_IPVLOG);
+                cs.setString(1, panno);
+                cs.setString(2, ipadd);
+                cs.setString(3, location);
+                cs.setString(4, state);
+                cs.setString(5, latitude+"");
+                cs.setString(6, longitude+"");
+                
                 cs.execute();
 
                 JSONArray jsonArray = new JSONArray();
