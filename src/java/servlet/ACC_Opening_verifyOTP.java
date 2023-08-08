@@ -39,6 +39,7 @@ public class ACC_Opening_verifyOTP extends HttpServlet {
         String mobile = jsonBody.getString("mobile");
         String emailId = jsonBody.getString("emailId");
         String otp = jsonBody.getString("otp");
+        int relativeCode = jsonBody.getInt("relativeCode");
 
 
         try {
@@ -55,7 +56,7 @@ public class ACC_Opening_verifyOTP extends HttpServlet {
             JSONArray jsonArray = DBUtil.resultSetToJsonArray(rs);
             
             if(jsonArray.getJSONObject(0).getString("Msg").equals("Authentication Successfull")){
-                jsonArray = saveAccInfo(mobile,emailId,"");
+                jsonArray = saveAccInfo(mobile,emailId,"",relativeCode);
             }
             
             resp.setContentType("application/json");
@@ -72,7 +73,7 @@ public class ACC_Opening_verifyOTP extends HttpServlet {
         }
     }
 
-    public JSONArray saveAccInfo(String mobile, String emailId, String UserRights) {
+    public JSONArray saveAccInfo(String mobile, String emailId, String UserRights,int relativeCode) {
         try {
             conn = DBUtil.getConnection();
 
@@ -81,7 +82,7 @@ public class ACC_Opening_verifyOTP extends HttpServlet {
             cs.setString(1, mobile);
             cs.setString(2, emailId);
             cs.setString(3, UserRights);
-
+            cs.setInt(4, relativeCode);
 
             // Execute the stored procedure
             rs = cs.executeQuery();

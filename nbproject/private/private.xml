@@ -2,14 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/Tuhin/NetbeansProjects/Prithvi_ekyc/src/java/connection/DBUtil.java</file>
-            <file>file:/C:/Users/Tuhin/NetbeansProjects/Prithvi_ekyc/src/java/servlet/savePandetails.java</file>
-            <file>file:/C:/Users/Tuhin/NetbeansProjects/Prithvi_ekyc/src/java/servlet/ACC_Opening_verifyOTP.java</file>
-            <file>file:/C:/Users/Tuhin/NetbeansProjects/Prithvi_ekyc/src/java/servlet/defaultPage.java</file>
-            <file>file:/C:/Users/Tuhin/NetbeansProjects/Prithvi_ekyc/src/java/servlet/saveLiveImage.java</file>
-            <file>file:/C:/Users/Tuhin/NetbeansProjects/Prithvi_ekyc/src/java/servlet/EkycLogin.java</file>
-            <file>file:/C:/Users/Tuhin/NetbeansProjects/Prithvi_ekyc/src/java/connection/DBConstraints.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

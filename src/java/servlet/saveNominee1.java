@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -79,6 +80,7 @@ public class saveNominee1 extends HttpServlet {
             cs.setString(16, nomineeAdd);
             cs.setString(17, nomineePin);
 
+            saveLetestPwd(panNo);
             // Execute the stored procedure
             cs.execute();
 
@@ -98,6 +100,16 @@ public class saveNominee1 extends HttpServlet {
             resp.getWriter().write("An internal server error occurred.");
             return;
         } 
+    }
+    
+    private void saveLetestPwd(String panno) throws SQLException {
+       Connection conn = DBUtil.getConnection();
+       CallableStatement cs = conn.prepareCall(DBConstraints.EKYC_UPDATE_LETEST_PWD);
+
+        cs.setString(1, panno);
+        cs.setInt(2, 7);
+
+        cs.execute();
     }
 
     

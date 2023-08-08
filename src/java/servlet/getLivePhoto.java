@@ -14,10 +14,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,8 +28,9 @@ import org.json.JSONObject;
  *
  * @author Tuhin
  */
-@WebServlet(name = "getReviewDetails", urlPatterns = {"/getReviewDetails"})
-public class getReviewDetails extends HttpServlet {
+@WebServlet(name = "getLivePhoto", urlPatterns = {"/getLivePhoto"})
+public class getLivePhoto extends HttpServlet {
+
     CallableStatement cs = null;
     ResultSet rs = null;
     Connection conn = null;
@@ -36,50 +40,46 @@ public class getReviewDetails extends HttpServlet {
 
         JSONObject jsonBody = ReqBody.getBody(req);
 
-        String mobile = jsonBody.getString("mobile");
-        String relation = jsonBody.getString("relation");
-        String pan = jsonBody.getString("pan");
+        System.out.println("json: " + jsonBody);
 
-        
-        System.out.println("js: "+ jsonBody);
+        String pan = jsonBody.getString("pan");
 
         try {
             conn = DBUtil.getConnection();
+            cs = conn.prepareCall(DBConstraints.EKYC_GET_LIVE_PHOTO);
 
-            cs = conn.prepareCall(DBConstraints.EKYC_GET_CLIENT_REVIEW_DET);
-
-            cs.setString(1, mobile);
-            cs.setString(2, relation);
+            cs.setString(1, pan);
 
             // Execute the stored procedure
             rs = cs.executeQuery();
 
             JSONArray jsonArray = DBUtil.resultSetToJsonArray(rs);
+            Object object = jsonArray.getJSONObject(0).get("image");
 
-            // You can now send the JSONArray in the response as JSON data
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            // Write the object to the output stream
+            objectOutputStream.writeObject(object);
+
+            // Get the byte array representing the serialized object
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            String base64String = java.util.Base64.getEncoder().encodeToString(byteArray);
+            
+            jsonArray.getJSONObject(0).remove("image");
+            jsonArray.getJSONObject(0).put("image", base64String);
+            
             resp.setContentType("application/json");
             resp.getWriter().write(jsonArray.toString());
-            
-            saveLetestPwd(pan);
 
             return;
-            
         } catch (Exception e) {
             System.out.println("Server error: " + e);
+            e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("An internal server error occurred.");
             return;
         }
-
     }
-    
-    private void saveLetestPwd(String panno) throws SQLException {
-        Connection conn = DBUtil.getConnection();
-        CallableStatement cs = conn.prepareCall(DBConstraints.EKYC_UPDATE_LETEST_PWD);
+   
 
-        cs.setString(1, panno);
-        cs.setInt(2, 8);
-
-        cs.execute();
-    }
 }

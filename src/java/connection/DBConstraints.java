@@ -14,7 +14,7 @@ public class DBConstraints {
     public static String EKYC_IS_ALREADY_ACC = "{call Proc_isAlreadyAcc(?,?)}";
     public static String EKYC_SEND_OTP = "{call Proc_GetSMSCredential(?,?,?)}";
     public static String EKYC_VERIFY_OTP = "{call Proc_verifyOTP(?,?)}";
-    public static String EKYC_SAVE_ACC_INFO = "{call proc_saveAccInfo(?,?,?)}";
+    public static String EKYC_SAVE_ACC_INFO = "{call proc_saveAccInfo(?,?,?,?)}";
     public static String EKYC_SAVE_PAN_INFO = "{call Proc_savePanDetails(?,?,?,?)}";
     public static String EKYC_SAVE_PERSONAL_DETAILS = "{call proc_savepersonaldetails(?,?,?,?,?,?,?,?,?)}";
     public static String EKYC_SAVE_SEGMENT = "{call proc_savesegment(?,?,?,?,?,?,?)}";
@@ -27,11 +27,9 @@ public class DBConstraints {
     public static String EKYC_SAVE_NOMINEE2 = "{call proc_savesecnomi(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
     public static String EKYC_SAVE_NOMINEE3 = "{call proc_savethirdnomi(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
     public static String EKYC_GET_CLIENT_REVIEW_DET = "{call Proc_GetClientReviewDet(?,?)}";
-
-
-
-
-    
-            
+    public static String EKYC_GET_LIVE_PHOTO = "{call proc_getLivePhoto(?)}";
+    public static String EKYC_UPDATE_LETEST_PWD = "{call Proc_UpdateLastPwd(?,?)}";
+    public static String EKYC_GET_LETEST_PWD = "{call proc_getLastPwd(?,?)}";
+    public static String EKYC_GET_SMS_CRED_RESUMEEKYC= "{call getSMSCred_ResumeEkyc(?)}";
 
 }

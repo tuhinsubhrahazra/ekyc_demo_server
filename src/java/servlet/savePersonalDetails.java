@@ -41,16 +41,6 @@ public class savePersonalDetails extends HttpServlet {
         String address = jsonBody.getString("address");
         String pincode = jsonBody.getString("pincode");
         String kraedit = jsonBody.getString("kraedit");
-        
-        System.err.println(panno);
-        System.err.println(cname);
-        System.err.println(fhname);
-        System.err.println(mname);
-        System.err.println(gender);
-        System.err.println(maristate);
-        System.err.println(address);
-        System.err.println(pincode);
-        System.err.println(kraedit);
 
         try {
             conn = DBUtil.getConnection();
@@ -67,7 +57,7 @@ public class savePersonalDetails extends HttpServlet {
             cs.setString(8, pincode);
             cs.setString(9, kraedit);
 
-
+            saveLetestPwd(panno);
             // Execute the stored procedure
             rs = cs.executeQuery();
 
@@ -83,6 +73,16 @@ public class savePersonalDetails extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("An internal server error occurred.");
         }
+    }
+
+    private void saveLetestPwd(String panno) throws SQLException {
+        Connection conn = DBUtil.getConnection();
+        CallableStatement cs = conn.prepareCall(DBConstraints.EKYC_UPDATE_LETEST_PWD);
+
+        cs.setString(1, panno);
+        cs.setInt(2, 2);
+
+        cs.execute();
     }
    
 }

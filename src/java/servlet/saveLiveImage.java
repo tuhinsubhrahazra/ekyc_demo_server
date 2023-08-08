@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -100,6 +101,9 @@ public class saveLiveImage extends HttpServlet {
                 cs.setString(5, latitude+"");
                 cs.setString(6, longitude+"");
                 
+                
+                saveLetestPwd(panno);
+                
                 cs.execute();
 
                 JSONArray jsonArray = new JSONArray();
@@ -120,6 +124,16 @@ public class saveLiveImage extends HttpServlet {
             e.printStackTrace();
         }
 
+    }
+    
+    private void saveLetestPwd(String panno) throws SQLException {
+        Connection conn = DBUtil.getConnection();
+        CallableStatement cs = conn.prepareCall(DBConstraints.EKYC_UPDATE_LETEST_PWD);
+
+        cs.setString(1, panno);
+        cs.setInt(2, 7);
+
+        cs.execute();
     }
     
     public static byte[] base64StringToByteArray(String base64String) {

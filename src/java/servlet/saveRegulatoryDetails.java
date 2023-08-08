@@ -17,6 +17,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,6 +69,7 @@ public class saveRegulatoryDetails extends HttpServlet {
                 cs.setInt(10, bsda);
                 cs.setInt(11, dis);
 
+                saveLetestPwd(pan);
                 // Execute the stored procedure
                 cs.execute();
 
@@ -90,4 +92,13 @@ public class saveRegulatoryDetails extends HttpServlet {
         }
     }
 
+    private void saveLetestPwd(String panno) throws SQLException {
+        Connection conn = DBUtil.getConnection();
+        CallableStatement cs = conn.prepareCall(DBConstraints.EKYC_UPDATE_LETEST_PWD);
+
+        cs.setString(1, panno);
+        cs.setInt(2, 6);
+
+        cs.execute();
+    }
 }

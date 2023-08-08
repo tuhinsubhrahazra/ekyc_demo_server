@@ -53,6 +53,7 @@ public class saveSegment extends HttpServlet {
             cs.setString(6, dp);
             cs.setString(7, mf);
 
+            saveLetestPwd(panNo);
             // Execute the stored procedure
             rs = cs.executeQuery();
 
@@ -72,6 +73,16 @@ public class saveSegment extends HttpServlet {
             return;
         }
 
+    }
+    
+    private void saveLetestPwd(String panno) throws SQLException {
+        Connection conn = DBUtil.getConnection();
+        CallableStatement cs = conn.prepareCall(DBConstraints.EKYC_UPDATE_LETEST_PWD);
+
+        cs.setString(1, panno);
+        cs.setInt(2, 3);
+
+        cs.execute();
     }
    
 }

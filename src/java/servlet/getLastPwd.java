@@ -14,72 +14,51 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.sql.*;
 
 /**
  *
  * @author Tuhin
  */
-@WebServlet(name = "getReviewDetails", urlPatterns = {"/getReviewDetails"})
-public class getReviewDetails extends HttpServlet {
+@WebServlet(name = "getLastPwd", urlPatterns = {"/getLastPwd"})
+public class getLastPwd extends HttpServlet {
+
     CallableStatement cs = null;
     ResultSet rs = null;
     Connection conn = null;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         JSONObject jsonBody = ReqBody.getBody(req);
 
-        String mobile = jsonBody.getString("mobile");
-        String relation = jsonBody.getString("relation");
-        String pan = jsonBody.getString("pan");
-
-        
-        System.out.println("js: "+ jsonBody);
+        String panno = jsonBody.getString("panno");
+        String otp = jsonBody.getString("otp");
 
         try {
             conn = DBUtil.getConnection();
 
-            cs = conn.prepareCall(DBConstraints.EKYC_GET_CLIENT_REVIEW_DET);
+            cs = conn.prepareCall(DBConstraints.EKYC_GET_LETEST_PWD);
+            cs.setString(1, panno);
+            cs.setString(2, otp);
 
-            cs.setString(1, mobile);
-            cs.setString(2, relation);
 
             // Execute the stored procedure
             rs = cs.executeQuery();
 
             JSONArray jsonArray = DBUtil.resultSetToJsonArray(rs);
 
-            // You can now send the JSONArray in the response as JSON data
             resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(jsonArray.toString());
-            
-            saveLetestPwd(pan);
 
-            return;
-            
         } catch (Exception e) {
             System.out.println("Server error: " + e);
+            e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("An internal server error occurred.");
-            return;
         }
-
     }
-    
-    private void saveLetestPwd(String panno) throws SQLException {
-        Connection conn = DBUtil.getConnection();
-        CallableStatement cs = conn.prepareCall(DBConstraints.EKYC_UPDATE_LETEST_PWD);
 
-        cs.setString(1, panno);
-        cs.setInt(2, 8);
-
-        cs.execute();
-    }
 }

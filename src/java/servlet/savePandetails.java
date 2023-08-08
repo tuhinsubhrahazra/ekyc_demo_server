@@ -35,7 +35,8 @@ public class savePandetails extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         JSONObject jsonBody = ReqBody.getBody(req);
-
+        
+        
         String panNo = jsonBody.getString("panNo");
         String mobileNo = jsonBody.getString("mobileNo");
         String emailId = jsonBody.getString("emailId");
@@ -65,14 +66,28 @@ public class savePandetails extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(jsonArray.toString());
 
+            saveLetestPwd(panNo);
+
             return;
 
         } catch (Exception e) {
             System.out.println("Server error: " + e);
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("An internal server error occurred.");
+            e.printStackTrace();
             return;
         }
+    }
+    
+    private void saveLetestPwd(String panno) throws SQLException {
+        System.out.println("Pan save 1");
+        Connection conn = DBUtil.getConnection();
+        CallableStatement cs = conn.prepareCall(DBConstraints.EKYC_UPDATE_LETEST_PWD);
+
+        cs.setString(1, panno);
+        cs.setInt(2, 1);
+
+        cs.execute();
     }
 
     private void savePanProofImage(JSONObject jsonBody) throws SQLException {
@@ -121,9 +136,7 @@ public class savePandetails extends HttpServlet {
     
     public static byte[] base64StringToByteArray(String base64String) {
         // Decode the Base64 string to byte array
-//        byte[] byteArray = Base64.getDecoder().decode(base64String);
-        byte[] byteArray = Base64.getDecoder().decode(base64String.getBytes(StandardCharsets.UTF_8));
-        return byteArray;
+        return Base64.getDecoder().decode(base64String.getBytes(StandardCharsets.UTF_8));
     }
 
 }
